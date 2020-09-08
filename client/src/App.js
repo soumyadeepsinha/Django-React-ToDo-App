@@ -17,6 +17,8 @@ class App extends React.Component {
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.getCookie = this.getCookie.bind(this)
+    this.todoEdit = this.todoEdit.bind(this)
+    this.todoDelete = this.todoDelete.bind(this)
   }
 
   getCookie(name) {
@@ -106,6 +108,21 @@ class App extends React.Component {
     })
   }
 
+  todoDelete(task) {
+    let csrftoken = this.getCookie('csrftoken')
+
+    fetch(`http://127.0.0.1:8000/api/task-delete/${task.id}/`, {
+      method: 'DELETE',
+      headers: {
+        'Content-type': 'application/json',
+        'X-CSRFToken': csrftoken,
+      },
+    }).then((response) => {
+      // reload todos after delete
+      this.fetchTask()
+    })
+  }
+
   render() {
     let task = this.state.todoList
     let self = this
@@ -136,7 +153,7 @@ class App extends React.Component {
                       <button onClick={() => self.todoEdit(task)} className="btn btn-sm btn-outline-info">Edit</button>
                     </div>
                     <div style={{ flex: 2 }}>
-                      <button className="btn btn-sm btn-outline-dark delete">x</button>
+                      <button onClick={() => self.todoDelete(task)} className="btn btn-sm btn-outline-dark delete">x</button>
                     </div>
                   </div>
                 )
