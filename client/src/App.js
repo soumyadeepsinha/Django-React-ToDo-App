@@ -102,7 +102,7 @@ class App extends React.Component {
         }
       })
     }).catch(function (error) {
-      console.log('Erroe: ', error)
+      console.log('Error: ', error)
     })
 
   }
@@ -154,47 +154,49 @@ class App extends React.Component {
     let tasks = this.state.todoList
     let self = this
     return (
-      <div className="container">
-        <div id="task-container">
-          <div id="form-wrapper">
-            <form onSubmit={this.handleSubmit} id="form">
-              <div className="flex-wrapper">
-                <div style={{ flex: 6 }}>
-                  <input onChange={this.handleChange} className="form-control" id="title" value={this.state.activeItem.title} type="text" name="title" placeholder="Add your news tasks..." />
-                </div>
-
-                <div style={{ flex: 1 }}>
-                  <input id="submit" className="btn btn-warning" type="submit" value="Add a new task" />
-                </div>
-              </div>
-            </form>
-          </div>
-
-          <div id="list-wrapper">
-            {tasks.map(function (task, index) {
-              return (
-                <div key={index} className="task-wrapper flex-wrapper">
-                  <div onClick={() => self.strikeUnstrike(task)} style={{ flex: 7 }}>
-
-                    {task.completed === false ?
-                      (<span>{task.title}</span>) :
-                      (<strike>{task.title}</strike>)
-                    }
+      <React.Fragment>
+        <div className="container">
+          <div id="task-container">
+            <div id="form-wrapper">
+              <form onSubmit={this.handleSubmit} id="form">
+                <div className="flex-wrapper">
+                  <div style={{ flex: 6 }}>
+                    <input onChange={this.handleChange} className="form-control" id="title" value={this.state.activeItem.title} type="text" name="title" placeholder="Add your news tasks..." />
                   </div>
 
                   <div style={{ flex: 1 }}>
-                    <button onClick={() => self.todoEdit(task)} className="btn btn-sm btn-outline-info">Edit</button>
-                  </div>
-
-                  <div style={{ flex: 1 }}>
-                    <button onClick={() => self.todoDelete(task)} className="btn btn-sm btn-outline-danger delete">x</button>
+                    <input id="submit" className="btn btn-warning" type="submit" value="Add a new task" />
                   </div>
                 </div>
-              )
-            })}
+              </form>
+            </div>
+
+            <div id="list-wrapper">
+              {tasks.map(function (task, index) {
+                return (
+                  <div key={index} className="task-wrapper flex-wrapper">
+                    <div onClick={() => self.strikeUnstrike(task)} style={{ flex: 7 }}>
+
+                      {task.completed === false ?
+                        (<span>{task.title}</span>) :
+                        (<strike>{task.title}</strike>)
+                      }
+                    </div>
+
+                    <div style={{ flex: 1 }}>
+                      <button onClick={() => self.todoEdit(task)} className="btn btn-sm btn-outline-info">Edit</button>
+                    </div>
+
+                    <div style={{ flex: 1 }}>
+                      <button onClick={() => self.todoDelete(task)} className="btn btn-sm btn-outline-danger delete">x</button>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         </div>
-      </div>
+      </React.Fragment>
     )
   }
 }
