@@ -19,6 +19,7 @@ class App extends React.Component {
     this.getCookie = this.getCookie.bind(this)
     this.todoEdit = this.todoEdit.bind(this)
     this.todoDelete = this.todoDelete.bind(this)
+    this.strikeUnstrike = this.strikeUnstrike.bind(this)
   }
 
   getCookie(name) {
@@ -123,6 +124,24 @@ class App extends React.Component {
     })
   }
 
+  strikeUnstrike(task) {
+    task.completed = !task.completed
+    let csrftoken = this.getCookie('csrftoken')
+    let url = `http://127.0.0.1:8000/api/task-update/${task.id}/`
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+        'X-CSRFToken': csrftoken,
+      },
+      body: JSON.stringify({ 'completed': task.completed, 'title': task.title })
+    }).then(() => {
+      this.fetchTask()
+    })
+
+    console.log('Task', task.completed);
+  }
+
   render() {
     let task = this.state.todoList
     let self = this
@@ -133,28 +152,38 @@ class App extends React.Component {
             <div id="form-wrapper">
               <form onSubmit={this.handleSubmit} id="form">
                 <div className="flex-wrapper">
+
                   <div style={{ flex: 6 }}>
                     <input onChange={this.handleChange} id="title" className="form-control" name="title" value={this.state.activeItem.title} type="text" autoComplete="off" placeholder="Whats you next task" />
                   </div>
+
                   <div style={{ flex: 1 }}>
                     <input id="submit" className="btn btn-warning" type="submit" value="Add a new task" />
                   </div>
+
                 </div>
               </form>
             </div>
             <div id="list-wrapper">
               {task.map(function (task, index) {
                 return (
-                  <div key={index} className="task-wrapper flex-wrapper">
+                  <div onClick={() => self.strikeUnstrike(task)} key={index} className="task-wrapper flex-wrapper">
+
                     <div style={{ flex: 7 }}>
-                      <span>{task.title}</span>
+                      {task.completed === false ?
+                        (<span>{task.title}</span>) :
+                        (<strike>{task.title}</strike>)
+                      }
                     </div>
+
                     <div style={{ flex: 1 }}>
                       <button onClick={() => self.todoEdit(task)} className="btn btn-sm btn-outline-info">Edit</button>
                     </div>
+
                     <div style={{ flex: 2 }}>
                       <button onClick={() => self.todoDelete(task)} className="btn btn-sm btn-outline-dark delete">x</button>
                     </div>
+
                   </div>
                 )
               })}
