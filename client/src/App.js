@@ -16,6 +16,23 @@ class App extends React.Component {
     this.fetchTask = this.fetchTask.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.getCookie = this.getCookie.bind(this)
+  }
+
+  getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
   }
 
   componentDidMount() {
@@ -23,7 +40,6 @@ class App extends React.Component {
   }
 
   fetchTask() {
-    console.log('Fetching...');
     fetch('http://localhost:8000/api/task-list/')
       .then((response) => response.json())
       .then(data => {
@@ -49,11 +65,23 @@ class App extends React.Component {
   handleSubmit(e) {
     e.preventDefault()
     console.log('Item: ', this.state.activeItem);
-    let url = ' http://127.0.0.1:8000/api/task-create/'
+
+    let csrftoken = this.getCookie('csrftoken')
+
+    let url = 'http://127.0.0.1:8000/api/task-create/'
+
+    if (this.state.editing === true) {
+      url = `http://127.0.0.1:8000/api/task-update/${this.state.activeItem.id}/`
+      this.setState({
+        editing: false
+      })
+    }
+
     fetch(url, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
+        'X-CSRFToken': csrftoken,
       },
       body: JSON.stringify(this.state.activeItem)
     }).then((response) => {
@@ -71,8 +99,16 @@ class App extends React.Component {
     })
   }
 
+  todoEdit(task) {
+    this.setState({
+      activeItem: task,
+      editing: true
+    })
+  }
+
   render() {
     let task = this.state.todoList
+    let self = this
     return (
       <React.Fragment>
         <div className="container">
@@ -81,10 +117,10 @@ class App extends React.Component {
               <form onSubmit={this.handleSubmit} id="form">
                 <div className="flex-wrapper">
                   <div style={{ flex: 6 }}>
-                    <input onChange={this.handleChange} id="title" className="form-control" name="title" type="text" autoComplete="off" placeholder="Whats you next task" />
+                    <input onChange={this.handleChange} id="title" className="form-control" name="title" value={this.state.activeItem.title} type="text" autoComplete="off" placeholder="Whats you next task" />
                   </div>
                   <div style={{ flex: 1 }}>
-                    <input id="submit" className="btn btn-warning" type="submit" name="Add" value="Add a new task" />
+                    <input id="submit" className="btn btn-warning" type="submit" value="Add a new task" />
                   </div>
                 </div>
               </form>
@@ -97,7 +133,7 @@ class App extends React.Component {
                       <span>{task.title}</span>
                     </div>
                     <div style={{ flex: 1 }}>
-                      <button className="btn btn-sm btn-outline-info">Edit</button>
+                      <button onClick={() => self.todoEdit(task)} className="btn btn-sm btn-outline-info">Edit</button>
                     </div>
                     <div style={{ flex: 2 }}>
                       <button className="btn btn-sm btn-outline-dark delete">x</button>
