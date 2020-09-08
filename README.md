@@ -2,7 +2,7 @@
 
 > Django Rest Framework + React frontend
 
-![Screenshots](/screenshot.png)
+![Preview](/Screenshot.png)
 
 ### Steps :
 
