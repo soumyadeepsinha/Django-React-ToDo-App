@@ -34,10 +34,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    'api.apps.ApiConfig',
-    
     'rest_framework',
+    'api.apps.ApiConfig',
     'corsheaders',
 
 ]
@@ -127,11 +125,9 @@ STATIC_URL = '/static/'
 
 
 STATICFILES_DIRS = [
-     os.path.join(BASE_DIR, 'client/build/static')
+    os.path.join(BASE_DIR, 'client/build/static')
 ]
 
 CORS_ORIGIN_WHITELIST = [
-
     "http://localhost:3000",
-
 ]
