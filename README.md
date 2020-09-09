@@ -2,7 +2,7 @@
 
 > Django Rest Framework + React frontend
 
-![Screenshots](/screenshot.png)
+![Preview](/Screenshot.png)
 
 ### Steps :
 
@@ -16,7 +16,7 @@
 - [x] Create models
 - [x] Update Installed Apps, Middleware in settings
 
-> frontend
+> Frontend
 
 - [x] Create React app (client)
 - [x] Create class App
@@ -31,6 +31,8 @@
 - [x] Show todos in page
 - [x] Create a strikeUnstrike function to mark todos as done or undone
 - [x] Command npm run build to generate the production mode
+
+> Deploy frontend app to django
 
 - [x] Add build files to template directory
 - [x] Add static files to client/build/static
